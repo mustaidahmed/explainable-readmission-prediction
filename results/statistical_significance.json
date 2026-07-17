@@ -1,0 +1,37 @@
+{
+    "Logistic Regression": {
+        "mean_auc": 0.6485797940808884,
+        "ci_lower": 0.631678355973802,
+        "ci_upper": 0.6641837755663567
+    },
+    "Decision Tree": {
+        "mean_auc": 0.6170018270289773,
+        "ci_lower": 0.6011507757313862,
+        "ci_upper": 0.6331053550470297
+    },
+    "Random Forest": {
+        "mean_auc": 0.6388525411799489,
+        "ci_lower": 0.6224257814288616,
+        "ci_upper": 0.6550456353661807
+    },
+    "XGBoost": {
+        "mean_auc": 0.6460415208625059,
+        "ci_lower": 0.6304459626197384,
+        "ci_upper": 0.6625488903615988
+    },
+    "LightGBM": {
+        "mean_auc": 0.6566375081916664,
+        "ci_lower": 0.6403772086980267,
+        "ci_upper": 0.6730496403507821
+    },
+    "Neural Network": {
+        "mean_auc": 0.6411589096828679,
+        "ci_lower": 0.6252272912598514,
+        "ci_upper": 0.6569947759452407
+    },
+    "comparison": {
+        "models": "LightGBM vs Logistic Regression",
+        "mean_diff": 0.008057714110778097,
+        "p_value": 0.074
+    }
+}
