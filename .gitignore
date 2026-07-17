@@ -1,0 +1,23 @@
+# Virtual environment
+venv/
+.venv/
+env/
+
+# Data files (avoid committing large CSVs)
+data/*.csv
+data/*.zip
+
+# Saved models (large binary files)
+models/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# IDE configurations
+.vscode/
+.idea/
+
+# Matplotlib cache
+.matplotlib/
