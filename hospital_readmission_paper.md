@@ -1,7 +1,7 @@
 # An Explainable Machine Learning Framework for Predicting 30-Day Hospital Readmissions Using Electronic Health Records
 
-**Author:** Antigravity AI Researcher  
-**Affiliation:** Advanced Agentic Coding Group, Google DeepMind  
+**Author:** Mustaid Ahmed  
+**Affiliation:** None  
 **Date:** July 17, 2026  
 
 ---
@@ -257,12 +257,12 @@ Table 2 displays the primary and clinical evaluation metrics obtained on the ind
 ### 7.3 Visualizing Performance
 Figure 3 displays the Receiver Operating Characteristic (ROC) curves, illustrating the trade-off between the True Positive Rate and False Positive Rate across all thresholds.
 
-![ROC Curves](file:///C:/Users/musta/.gemini/antigravity/brain/d3835cd4-f9f5-4a8e-97a1-b21e7889e4d2/roc_curves.png)  
+![ROC Curves](/C:/Users/musta/.gemini/antigravity/brain/d3835cd4-f9f5-4a8e-97a1-b21e7889e4d2/roc_curves.png)  
 *Figure 3: ROC Curves comparison on the test dataset ($N=13,994$).*
 
 Probability calibration is visualized in Figure 4. Accurate calibration ensures that the predicted risk score matches the true frequency of readmission.
 
-![Calibration Curves](file:///C:/Users/musta/.gemini/antigravity/brain/d3835cd4-f9f5-4a8e-97a1-b21e7889e4d2/calibration_curves.png)  
+![Calibration Curves](/C:/Users/musta/.gemini/antigravity/brain/d3835cd4-f9f5-4a8e-97a1-b21e7889e4d2/calibration_curves.png)  
 *Figure 4: Probability Calibration Curves across all models.*
 
 LightGBM and XGBoost display the most stable calibration, tracking the ideal diagonal line closely. The Neural Network exhibits under-confident predictions, while Logistic Regression and Decision Tree display higher calibration deviations.
@@ -275,7 +275,7 @@ To translate the LightGBM model's predictions into clinically understandable ins
 ### 8.1 Global Feature Importance
 We computed SHAP values for a representative sample of 500 test cases to assess global feature contributions. Figure 5 presents the SHAP summary plot, which displays both feature importance and the direction of feature effects.
 
-![SHAP Summary Plot](file:///C:/Users/musta/.gemini/antigravity/brain/d3835cd4-f9f5-4a8e-97a1-b21e7889e4d2/shap_summary_plot.png)  
+![SHAP Summary Plot](/C:/Users/musta/.gemini/antigravity/brain/d3835cd4-f9f5-4a8e-97a1-b21e7889e4d2/shap_summary_plot.png)  
 *Figure 5: SHAP Global Summary Plot for the LightGBM model. Features are ranked by mean absolute Shapley value.*
 
 In the SHAP summary plot, features are ordered by overall impact on model output. The horizontal axis represents the SHAP value (where values greater than zero indicate increased readmission risk). Each point represents a patient encounter, and color denotes the relative feature value (red for high, blue for low).
@@ -289,7 +289,7 @@ The analysis reveals:
 
 We also compared the SHAP global ranking with LightGBM's built-in split-based feature importance, shown in Figure 6.
 
-![Feature Importance](file:///C:/Users/musta/.gemini/antigravity/brain/d3835cd4-f9f5-4a8e-97a1-b21e7889e4d2/feature_importance.png)  
+![Feature Importance](/C:/Users/musta/.gemini/antigravity/brain/d3835cd4-f9f5-4a8e-97a1-b21e7889e4d2/feature_importance.png)  
 *Figure 6: Split-based Feature Importance Ranking for the LightGBM model.*
 
 While split-based feature importance ranks continuous variables like `num_lab_procedures` and `num_medications` at the top due to the high cardinality of splits, SHAP provides a more clinically sound ranking by highlighting prior utilization (`number_inpatient` / `total_prior_visits`) as the key indicator of patient vulnerability.
@@ -305,7 +305,7 @@ To demonstrate clinical utility, we present local explanations for two patient c
 
 Figure 7 shows the local SHAP waterfall plot for Case 1, decomposing how the patient's specific features shifted the prediction away from the base value ($E[f(X)] = -2.257$ on the logit scale).
 
-![Local SHAP High Risk](file:///C:/Users/musta/.gemini/antigravity/brain/d3835cd4-f9f5-4a8e-97a1-b21e7889e4d2/shap_local_high_risk.png)  
+![Local SHAP High Risk](/C:/Users/musta/.gemini/antigravity/brain/d3835cd4-f9f5-4a8e-97a1-b21e7889e4d2/shap_local_high_risk.png)  
 *Figure 7: Local SHAP Waterfall Plot for High-Risk Patient (Index 19).*
 
 For this patient, the risk was driven upward by:
@@ -316,7 +316,7 @@ For this patient, the risk was driven upward by:
 
 To validate these explanations, we generated a LIME explanation for the same patient, shown in Figure 8.
 
-![LIME Local Explanation](file:///C:/Users/musta/.gemini/antigravity/brain/d3835cd4-f9f5-4a8e-97a1-b21e7889e4d2/lime_local_high_risk.png)  
+![LIME Local Explanation](/C:/Users/musta/.gemini/antigravity/brain/d3835cd4-f9f5-4a8e-97a1-b21e7889e4d2/lime_local_high_risk.png)  
 *Figure 8: Local LIME Explanation Bar Plot for High-Risk Patient (Index 19).*
 
 LIME confirms that the patient's transfer to a rehabilitation facility (`discharge_disposition_id_22_1 > 0.5`), elevated diagnoses (`number_diagnoses > 0.82`), and standardized prior inpatient visits (`number_inpatient > 0.54`) are the primary drivers increasing the readmission probability. The consistency between SHAP and LIME reinforces the reliability of the explanation layer.
@@ -327,7 +327,7 @@ LIME confirms that the patient's transfer to a rehabilitation facility (`dischar
 
 Figure 9 shows the local SHAP waterfall plot for Case 2.
 
-![Local SHAP Low Risk](file:///C:/Users/musta/.gemini/antigravity/brain/d3835cd4-f9f5-4a8e-97a1-b21e7889e4d2/shap_local_low_risk.png)  
+![Local SHAP Low Risk](/C:/Users/musta/.gemini/antigravity/brain/d3835cd4-f9f5-4a8e-97a1-b21e7889e4d2/shap_local_low_risk.png)  
 *Figure 9: Local SHAP Waterfall Plot for Low-Risk Patient (Index 2828).*
 
 Here, the risk is driven downward by:
