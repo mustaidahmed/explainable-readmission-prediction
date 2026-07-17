@@ -1,7 +1,7 @@
 # An Explainable Machine Learning Framework for Predicting 30-Day Hospital Readmissions Using Electronic Health Records
 
 **Author:** Mustaid Ahmed  
-**Affiliation:** None  
+**Affiliation:** Saint Louis University, St. Louis, MO, USA  
 **Date:** July 17, 2026  
 
 ---
