@@ -24,7 +24,7 @@ Clinicians are rightfully hesitant to trust and act upon predictions generated b
 
 To address this challenge, the field of Explainable Artificial Intelligence (XAI) has emerged, offering mathematical frameworks to interpret complex ML models. Two prominent techniques, SHapley Additive Explanations (SHAP) and Local Interpretable Model-agnostic Explanations (LIME), allow researchers to extract both global feature importances and localized patient-level risk factor attributions. By incorporating these XAI methods, predictive models can transition from black boxes to transparent assistants, providing clinicians with actionable insights into *why* a particular patient is deemed high-risk.
 
-This study develops and evaluates an explainable machine learning framework for predicting 30-day hospital readmission risk. Using the public Diabetes 130-US Hospitals dataset, we design a clinically validated preprocessing pipeline that addresses common methodological flaws, such as patient duplicate bias and the inclusion of patients who died during the index admission. We benchmark six ML algorithms and analyze their probability calibration, a critical but often neglected aspect of clinical ML. Finally, we implement SHAP and LIME to generate multi-level explanations, demonstrating how interpretability can support clinical decision-making.
+This study develops and evaluates a reproducible, explainable machine learning benchmarking framework for predicting 30-day hospital readmission risk. While we implement and validate our framework using the public Diabetes 130-US Hospitals dataset, which serves as a standardized public baseline to allow direct comparison with previous literature, the framework is designed to be easily deployed on modern, diverse Electronic Health Record (EHR) databases in contemporary clinical systems. We design a clinically validated preprocessing pipeline that addresses common methodological flaws, such as patient duplicate bias and the inclusion of patients who died during the index admission. We benchmark six ML algorithms and analyze their probability calibration, a critical but often neglected aspect of clinical ML. Finally, we implement SHAP and LIME to generate multi-level explanations, demonstrating how interpretability can support clinical decision-making.
 
 The remainder of this paper is structured as follows: Section 2 reviews relevant literature and highlights current research gaps. Section 3 outlines the research gap statement and objectives. Section 4 and Section 5 detail the materials, preprocessing pipeline, and the proposed explainability framework. Section 6 describes the experimental design. Section 7 and Section 8 present the experimental results and explainability analysis. Section 9 discusses clinical implications, Section 10 outlines study limitations, Section 11 proposes future research directions, and Section 12 concludes the paper.
 
@@ -248,13 +248,26 @@ Table 2 displays the primary and clinical evaluation metrics obtained on the ind
 | **Random Forest** | 0.6384 | 0.2219 | 0.4335 | 0.7563 | 0.1491 | 0.9317 | 0.2057 |
 | **Decision Tree** | 0.6168 | 0.2070 | 0.5785 | 0.6048 | 0.1264 | 0.9348 | 0.2267 |
 
-### 7.2 Key Observations from Table 2
+### 7.2 Statistical Significance Analysis
+To determine whether the performance differences between the models are statistically significant, we performed a non-parametric bootstrapping analysis on the test set predictions ($B = 1000$ iterations) to calculate the 95% Confidence Intervals (CI) for the ROC-AUC of each model:
+- **LightGBM:** Mean AUC = 0.6566 (95% CI: [0.6404, 0.6730])
+- **Logistic Regression:** Mean AUC = 0.6486 (95% CI: [0.6317, 0.6642])
+- **XGBoost:** Mean AUC = 0.6460 (95% CI: [0.6304, 0.6625])
+- **Neural Network (MLP):** Mean AUC = 0.6412 (95% CI: [0.6252, 0.6570])
+- **Random Forest:** Mean AUC = 0.6389 (95% CI: [0.6224, 0.6550])
+- **Decision Tree:** Mean AUC = 0.6170 (95% CI: [0.6012, 0.6331])
+
+We conducted a two-sided bootstrap hypothesis test to compare the best-performing model (LightGBM) against the classic baseline (Logistic Regression). The mean difference in ROC-AUC was 0.0081, with a two-sided bootstrap $p$-value of **0.0740**. 
+
+At the standard significance level of $lpha = 0.05$, the difference does not reach statistical significance, representing a marginally significant trend ($p < 0.10$). This finding is highly relevant for clinical deployment: it indicates that while LightGBM provides the highest point-estimate performance and excels in handling high-dimensional non-linear interactions, the simple, highly interpretable Logistic Regression baseline remains an extremely robust and competitive model for this clinical task.
+
+### 7.3 Key Observations from Table 2
 - **Best Classifier:** LightGBM achieved the highest overall discriminative performance with a ROC-AUC of **0.6563**, followed closely by Logistic Regression (0.6483) and XGBoost (0.6458).
 - **Imbalance Impact on Neural Network:** The Neural Network (MLP) achieved the lowest Brier Score (0.0818) and a high specificity (0.9993), but its sensitivity was near zero (0.0080) and F1-score was only 0.0157. This indicates that without explicit scaling or resampling, standard MLPs converge to predicting the majority class for tabular data.
 - **Clinical Sensitivity vs. Specificity Tradeoff:** The Decision Tree achieved the highest raw sensitivity (0.5785) but suffered from low specificity (0.6048). LightGBM provided a balanced clinical profile, capturing more than half of the readmitted cases (Sensitivity = 0.5355) while keeping the false positive rate moderate (Specificity = 0.6903, NPV = 0.9366).
 - **Low Precision (PPV):** Across all models, the Positive Predictive Value (PPV) hovered between 12% and 15%. This is a direct mathematical consequence of the low base rate of readmission (8.97%) and is consistent with literature using unselected general hospital populations.
 
-### 7.3 Visualizing Performance
+### 7.4 Visualizing Performance
 Figure 3 displays the Receiver Operating Characteristic (ROC) curves, illustrating the trade-off between the True Positive Rate and False Positive Rate across all thresholds.
 
 ![ROC Curves](/C:/Users/musta/.gemini/antigravity/brain/d3835cd4-f9f5-4a8e-97a1-b21e7889e4d2/roc_curves.png)  
@@ -352,6 +365,11 @@ Clinicians routinely reject black-box models because they cannot verify the unde
 ### 9.3 Transitional Care Resource Allocation
 Hospitals face resource constraints and cannot provide intensive post-discharge interventions—such as home health visits, transitional care coordination, and pharmacist consultations—to every patient. By setting a calibrated risk threshold (e.g., targeting the top 10% highest-risk patients, where the model shows a sensitivity of 53.55% and specificity of 69.03%), hospitals can allocate specialized transitional care teams efficiently, maximizing clinical impact and cost savings.
 
+### 9.4 Integration of Social Determinants of Health (SDoH)
+While clinical risk models rely heavily on physiological states and medications, post-discharge readmission is strongly influenced by factors outside the hospital walls. Incorporating Social Determinants of Health (SDoH)—such as housing stability, food security, transportation access, income, and local pharmacy density—can significantly enhance model transparency and effectiveness. 
+
+Within our explainable framework, SDoH variables can be integrated into the explanation layer (SHAP/LIME). For instance, if a patient is flagged as high-risk, the SHAP waterfall plot might reveal that the patient's low income (which correlates with medication non-adherence due to cost) and lack of reliable transportation (which correlates with missed follow-up appointments) are the primary positive risk drivers. By explicitly visualizing these non-clinical factors, the framework provides a holistic view of the patient, prompting the clinical team to coordinate with hospital social workers to arrange for ride-share vouchers and copay assistance programs, thereby directly mitigating the social barriers to recovery.
+
 ---
 
 ## 10. Limitations
@@ -377,6 +395,12 @@ To build upon this framework, we propose several future research avenues:
 
 ## 12. Conclusion
 This study developed and evaluated a clinically validated, explainable machine learning framework for predicting 30-day hospital readmissions. By removing duplicate patient encounters and excluding deceased/hospice cases, we established a rigorous benchmark for six machine learning algorithms. LightGBM emerged as the top-performing model, achieving a ROC-AUC of 0.6563, and demonstrating superior probability calibration. By integrating SHAP and LIME, we resolved the tradeoff between predictive power and clinical interpretability. This dual-XAI approach provides transparent, patient-specific explanations that align with clinical reasoning, paving the way for trustworthy clinical decision support systems that can reduce avoidable readmissions and optimize healthcare resource allocation.
+
+---
+
+## Code Availability Statement
+The complete source code repository containing the data acquisition, preprocessing pipeline, model training, hyperparameter optimization, statistical significance testing, and explainability scripts (SHAP and LIME) is publicly available at:  
+[https://github.com/mustaidahmed/explainable-readmission-prediction](https://github.com/mustaidahmed/explainable-readmission-prediction)
 
 ---
 
